@@ -22,16 +22,25 @@ function App() {
   return (
     <div>
       <h1>Music Library</h1>
+        <table>
+          <tr>
+            <th>Title</th>
+            <th>Artist</th>
+            <th>Album</th>
+            <th>Genre</th>
+            <th>Release Date</th>
+          </tr>
       {songs.map((song) =>(
-        <div>
-          <p>{song?.title}</p>
-          <p>{song?.artist}</p>
-          <p>{song?.album}</p>
-          <p>{song?.genre}</p>
-          <p>{song?.release_date}</p>
-          <hr/>
-        </div>
-        ))}
+          <tr>
+            <td>{song?.title}</td>
+            <td>{song?.artist}</td>
+            <td>{song?.album}</td>
+            <td>{song?.genre}</td>
+            <td>{song?.release_date}</td>
+          </tr>
+          
+          ))}
+        </table>
     </div>
   );
 }
