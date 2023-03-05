@@ -15,6 +15,10 @@ function App() {
   
   const [date, setDate] = useState('')
 
+  const [category, setCategory] = useState('')
+
+  const [choice, setChoice] =useState([])
+
   useEffect(() => {
     getAllSongs()
   }, []);
@@ -52,10 +56,45 @@ function App() {
     setDate(event.target.value)
   }
 
+  const handleCategoryChange = (event) => {
+    setCategory(event.target.value)
+  }
+  
+  const handleChoiceChange = (event) => {
+    setChoice(songs.filter((song) => song[category] === event.target.value))
+  }
+
+  const displaySongs = (songsArr) => {
+    return songsArr.map((song) =>(
+      <tr>
+        <td>{song?.title}</td>
+        <td>{song?.artist}</td>
+        <td>{song?.album}</td>
+        <td>{song?.genre}</td>
+        <td>{song?.release_date}</td>
+      </tr>
+      ))
+  }
+
   // As a developer, I want to display the data (song title, album, artist, genre, and release date) from the API within a table on the frontend. 
 
   return (
     <div>
+        <label for='songs'>Category: </label>
+        <select name='categories' value={category} onChange={handleCategoryChange}>
+          <option value="">Select your category</option>
+          <option value='title'>Title</option>
+          <option value='artist'>Artist</option>
+          <option value='genre'>Genre</option>
+          <option value='album'>Album</option>
+          <option value='release_date'>Release Date</option>
+        </select>
+        <select name='choice' onChange={handleChoiceChange}>
+          <option value="">Select the {category}</option>
+          {songs.map((song) => (
+           <option>{song[category]}</option>
+          ))}
+        </select>
       <h1>Music Library</h1>
         <table>
           <tr>
@@ -65,15 +104,7 @@ function App() {
             <th>Genre</th>
             <th>Release Date</th>
           </tr>
-      {songs.map((song) =>(
-          <tr>
-            <td>{song?.title}</td>
-            <td>{song?.artist}</td>
-            <td>{song?.album}</td>
-            <td>{song?.genre}</td>
-            <td>{song?.release_date}</td>
-          </tr>
-          ))}
+          {choice.length > 0 ? displaySongs(choice): displaySongs(songs)}
         </table>
         <form>
           <label>Title</label>
