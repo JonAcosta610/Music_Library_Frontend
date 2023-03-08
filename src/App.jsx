@@ -17,7 +17,11 @@ function App() {
 
   const [category, setCategory] = useState('')
 
-  const [choice, setChoice] =useState([])
+  const [choice, setChoice] = useState([])
+
+  const [edit, setEdit] = useState([])
+
+  const [remove, setRemove] = useState([])
 
   useEffect(() => {
     getAllSongs()
@@ -36,6 +40,12 @@ function App() {
     await axios.post('http://127.0.0.1:8000/api/music/', songObject)
   }
 
+  async function editSong(event){
+    const editSongObject = {title, artist, album, 'release_date': date, genre}
+    await axios.put('http://127.0.0.1:8000/api/music/', editSongObject)
+    .then(response => setEdit(response.data.edit));
+  }
+  
   const handleTitleChange = (event) => {
     setTitle(event.target.value)
   }
@@ -72,6 +82,8 @@ function App() {
         <td>{song?.album}</td>
         <td>{song?.genre}</td>
         <td>{song?.release_date}</td>
+        <button onClick={(event) => editSong(event)}>Edit</button>
+        <button onClick={(event) => deleteSong(event)}>Delete</button>
       </tr>
       ))
   }
@@ -80,7 +92,8 @@ function App() {
 
   return (
     <div>
-        <label for='songs'>Category: </label>
+        <h1>Music Library</h1>
+        <label for='songs'>Filter: </label>
         <select name='categories' value={category} onChange={handleCategoryChange}>
           <option value="">Select your category</option>
           <option value='title'>Title</option>
@@ -91,11 +104,16 @@ function App() {
         </select>
         <select name='choice' onChange={handleChoiceChange}>
           <option value="">Select the {category}</option>
-          {songs.map((song) => (
+            {songs
+              .filter(x => x[category] === [category])
+              .map((song) => (
+                <option value={song[title]}>{song[title]} -- {song[category]}
+                </option>
+              ))}
+          {/* {songs.map((song) => (
            <option>{song[category]}</option>
-          ))}
+          ))} */}
         </select>
-      <h1>Music Library</h1>
         <table>
           <tr>
             <th>Title</th>
@@ -107,16 +125,16 @@ function App() {
           {choice.length > 0 ? displaySongs(choice): displaySongs(songs)}
         </table>
         <form>
-          <label>Title</label>
+          <label>Title </label>
           <input type='text' onChange={(event) => handleTitleChange(event)}/>
           {/* <input type='text' onChange={function(event) {return handleTitleChange(event)}}/> */}
-          <label>Artist</label>
+          <label> Artist </label>
           <input type='text' onChange={(event) => handleArtistChange(event)}/>
-          <label>Album</label>
+          <label> Album </label>
           <input type='text' onChange={(event) => handleAlbumChange(event)}/>
-          <label>Genre</label>
+          <label> Genre </label>
           <input type='text' onChange={(event) => handleGenreChange(event)}/>
-          <label>Release Date</label>
+          <label> Release Date </label>
           <input type='date' onChange={(event) => handleDateChange(event)}/>
           {/* <input type='submit'value='Add New Song'/> */}
           <button onClick={(event) => postSong(event)} >Add New Song</button>
