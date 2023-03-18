@@ -2,30 +2,24 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 function App() {
-
   const [songs, setSongs] = useState([])
-
-  const [title, setTitle] = useState('')
-  
+  const [title, setTitle] = useState('') 
   const [artist, setArtist] = useState('')
-
   const [album, setAlbum] = useState('')
-
-  const [genre, setGenre] = useState('')
-  
+  const [genre, setGenre] = useState('') 
   const [date, setDate] = useState('')
-
   const [category, setCategory] = useState('')
-
   const [choice, setChoice] = useState([])
-
-  const [edit, setEdit] = useState([])
-
-  const [remove, setRemove] = useState([])
+  const [edit, setEdit] = useState(null)
+  const [categoriedArray, setCategoriedArray] = useState([])
 
   useEffect(() => {
     getAllSongs()
   }, []);
+
+  useEffect(() => {
+    setCategoryArray(songs)
+  }, [category]);
 
   async function getAllSongs() {
     const response = await axios.get('http://127.0.0.1:8000/api/music/');
@@ -39,11 +33,13 @@ function App() {
     const songObject = {title, artist, album, 'release_date': date, genre}
     await axios.post('http://127.0.0.1:8000/api/music/', songObject)
   }
-
-  async function editSong(event){
-    const editSongObject = {title, artist, album, 'release_date': date, genre}
+  async function editSong(){
+    const editSongObject = {title, artist:"WeekDay", album, 'release_date': date, genre};
     await axios.put('http://127.0.0.1:8000/api/music/', editSongObject)
-    .then(response => setEdit(response.data.edit));
+      .then(response => setEdit(response.data.edit));
+  }
+  async function deleteSong(song){
+    await axios.delete(`http://127.0.0.1:8000/api/music/${song.id}/`)
   }
   
   const handleTitleChange = (event) => {
@@ -82,14 +78,23 @@ function App() {
         <td>{song?.album}</td>
         <td>{song?.genre}</td>
         <td>{song?.release_date}</td>
-        <button onClick={(event) => editSong(event)}>Edit</button>
-        <button onClick={(event) => deleteSong(event)}>Delete</button>
+        <button onClick={() => editSong()}>Edit</button>
+        <button onClick={() => deleteSong(song)}>Delete</button>
       </tr>
       ))
   }
 
   // As a developer, I want to display the data (song title, album, artist, genre, and release date) from the API within a table on the frontend. 
-
+  const setCategoryArray = (arr) => {
+    const categoryArray = arr.reduce((accumulator, currentValue) => {
+      if(!accumulator.includes(currentValue[category])) {
+        accumulator.push(currentValue[category])
+      }
+      return accumulator
+    }, [])
+    setCategoriedArray(categoryArray)
+  }
+  
   return (
     <div>
         <h1>Music Library</h1>
@@ -104,18 +109,12 @@ function App() {
         </select>
         <select name='choice' onChange={handleChoiceChange}>
           <option value="">Select the {category}</option>
-            {songs
-              .filter(x => x[category] === [category])
-              .map((song) => (
-                <option value={song[title]}>{song[title]} -- {song[category]}
-                </option>
-              ))}
-          {/* {songs.map((song) => (
-           <option>{song[category]}</option>
-          ))} */}
+          {categoriedArray.map((categoryValue) => (
+            <option>{categoryValue}</option>
+          ))}
         </select>
         <table>
-          <tr>
+          <tr>  
             <th>Title</th>
             <th>Artist</th>
             <th>Album</th>
