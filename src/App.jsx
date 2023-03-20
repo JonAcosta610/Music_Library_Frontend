@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import './Style.css';
+import SearchBar from './Components/SearchBar/SearchBar';
+import MusicTable from './Components/MusicTable/Musictable';
+import CreateSong from './Components/CreateSong/CreateSong';
 
 function App() {
   const [songs, setSongs] = useState([])
@@ -72,7 +76,7 @@ function App() {
 
   const displaySongs = (songsArr) => {
     return songsArr.map((song) =>(
-      <tr>
+      <tr class='table-data'>
         <td>{song?.title}</td>
         <td>{song?.artist}</td>
         <td>{song?.album}</td>
@@ -96,37 +100,27 @@ function App() {
   }
 
   return (
-    <div>
-        <h1>Music Library</h1>
-        <label for='songs'>Filter: </label>
-        <select name='categories' value={category} onChange={handleCategoryChange}>
-          <option value="">Select your category</option>
-          <option value='title'>Title</option>
-          <option value='artist'>Artist</option>
-          <option value='genre'>Genre</option>
-          <option value='album'>Album</option>
-          <option value='release_date'>Release Date</option>
-        </select>
-        <select name='choice' onChange={handleChoiceChange}>
-          <option value="">Select the {category}</option>
-          {categoriedArray.map((categoryValue) => (
-            <option>{categoryValue}</option>
-          ))}
-        </select>
-        <table>
-          <tr>  
-            <th>Title</th>
-            <th>Artist</th>
-            <th>Album</th>
-            <th>Genre</th>
-            <th>Release Date</th>
-          </tr>
-          {choice.length > 0 ? displaySongs(choice): displaySongs(songs)}
-        </table>
-        <form>
+    <div class='main-page'>
+        <h1 class='table-name'>Music Library</h1>
+        <SearchBar 
+          category={category} 
+          categoriedArray={categoriedArray}
+          handleCategoryChange={handleCategoryChange}
+          handleChoiceChange={handleChoiceChange}
+        />
+        <MusicTable displaySongs={displaySongs} choice={choice} songs={songs}/>
+        <CreateSong 
+        handleTitleChange={handleTitleChange}
+        handleAlbumChange={handleAlbumChange}
+        handleArtistChange={handleArtistChange}
+        handleDateChange={handleDateChange}
+        handleGenreChange={handleGenreChange}
+        postSong={postSong}
+        />
+        {/* <form>
           <label>Title </label>
           <input type='text' onChange={(event) => handleTitleChange(event)}/>
-          {/* <input type='text' onChange={function(event) {return handleTitleChange(event)}}/> */}
+          <input type='text' onChange={function(event) {return handleTitleChange(event)}}/>
           <label> Artist </label>
           <input type='text' onChange={(event) => handleArtistChange(event)}/>
           <label> Album </label>
@@ -135,9 +129,9 @@ function App() {
           <input type='text' onChange={(event) => handleGenreChange(event)}/>
           <label> Release Date </label>
           <input type='date' onChange={(event) => handleDateChange(event)}/>
-          {/* <input type='submit'value='Add New Song'/> */}
+          <input type='submit'value='Add New Song'/>
           <button onClick={(event) => postSong(event)} >Add New Song</button>
-        </form>
+        </form> */}
     </div>
   );
 }
