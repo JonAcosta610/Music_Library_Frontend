@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './Style.css';
 import SearchBar from './Components/SearchBar/SearchBar';
 import MusicTable from './Components/MusicTable/Musictable';
 import CreateSong from './Components/CreateSong/CreateSong';
+import ImagePresenter from './Components/ImagePresenter/ImagePresenter';
+import './Style.css';
+import musicImage from './Assests/MusicImage.jpg';
 
 function App() {
   const [songs, setSongs] = useState([])
@@ -33,15 +35,16 @@ function App() {
 
   async function postSong(event){
     event.preventDefault()
-    // const songObject = {'title': title, 'artist': artist, 'album': album, 'release_date': date, 'genre': genre}
     const songObject = {title, artist, album, 'release_date': date, genre}
     await axios.post('http://127.0.0.1:8000/api/music/', songObject)
   }
+
   async function editSong(){
     const editSongObject = {title, artist:"WeekDay", album, 'release_date': date, genre};
     await axios.put('http://127.0.0.1:8000/api/music/', editSongObject)
       .then(response => setEdit(response.data.edit));
   }
+
   async function deleteSong(song){
     await axios.delete(`http://127.0.0.1:8000/api/music/${song.id}/`)
   }
@@ -88,7 +91,6 @@ function App() {
       ))
   }
 
-  // As a developer, I want to display the data (song title, album, artist, genre, and release date) from the API within a table on the frontend. 
   const setCategoryArray = (arr) => {
     const categoryArray = arr.reduce((accumulator, currentValue) => {
       if(!accumulator.includes(currentValue[category])) {
@@ -102,6 +104,7 @@ function App() {
   return (
     <div class='main-page'>
         <h1 class='table-name'>Music Library</h1>
+        <ImagePresenter image={musicImage} altText={'image of music notes'}/>
         <SearchBar 
           category={category} 
           categoriedArray={categoriedArray}
@@ -110,28 +113,13 @@ function App() {
         />
         <MusicTable displaySongs={displaySongs} choice={choice} songs={songs}/>
         <CreateSong 
-        handleTitleChange={handleTitleChange}
-        handleAlbumChange={handleAlbumChange}
-        handleArtistChange={handleArtistChange}
-        handleDateChange={handleDateChange}
-        handleGenreChange={handleGenreChange}
-        postSong={postSong}
+          handleTitleChange={handleTitleChange}
+          handleArtistChange={handleArtistChange}
+          handleAlbumChange={handleAlbumChange}
+          handleGenreChange={handleGenreChange}
+          handleDateChange={handleDateChange}
+          postSong={postSong}
         />
-        {/* <form>
-          <label>Title </label>
-          <input type='text' onChange={(event) => handleTitleChange(event)}/>
-          <input type='text' onChange={function(event) {return handleTitleChange(event)}}/>
-          <label> Artist </label>
-          <input type='text' onChange={(event) => handleArtistChange(event)}/>
-          <label> Album </label>
-          <input type='text' onChange={(event) => handleAlbumChange(event)}/>
-          <label> Genre </label>
-          <input type='text' onChange={(event) => handleGenreChange(event)}/>
-          <label> Release Date </label>
-          <input type='date' onChange={(event) => handleDateChange(event)}/>
-          <input type='submit'value='Add New Song'/>
-          <button onClick={(event) => postSong(event)} >Add New Song</button>
-        </form> */}
     </div>
   );
 }

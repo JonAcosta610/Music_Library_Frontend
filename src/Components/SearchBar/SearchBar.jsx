@@ -1,6 +1,6 @@
 import React from 'react';
 
-function SearchBar({category, categoriedArray, handleCategoryChange, handleChoiceChange}) {    
+function SearchBar ({category, categoriedArray, handleCategoryChange, handleChoiceChange}) {    
      
     return (
     <div>
@@ -20,7 +20,6 @@ function SearchBar({category, categoriedArray, handleCategoryChange, handleChoic
             ))}
         </select>
     </div>
-)}
+)};
+
 export default SearchBar;
-   
- 

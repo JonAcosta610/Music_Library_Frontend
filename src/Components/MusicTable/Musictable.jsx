@@ -1,8 +1,8 @@
 import React from 'react';
 
-function MusicTable({displaySongs, choice, songs}){
+function MusicTable ({displaySongs, choice, songs}) {
     return (
-        <table class="content-table">
+      <table class="content-table">
         <thead>
           <tr>  
             <th>Title</th>
@@ -14,8 +14,7 @@ function MusicTable({displaySongs, choice, songs}){
         </thead>
         {choice.length > 0 ? displaySongs(choice): displaySongs(songs)}
       </table>
-
     )
-}
+};
 
-export default MusicTable
+export default MusicTable;
